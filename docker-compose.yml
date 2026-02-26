@@ -1,0 +1,30 @@
+version: "3.9"
+
+services:
+  dev_emulator:
+    build:
+      context: ./
+      dockerfile: ./Dockerfile
+      network: host
+      args:
+        - HOST_IP=${HOST_IP}
+    platform: linux/x86_64
+    container_name: dev_emulator
+    privileged: true
+    devices:
+      - "/dev/kvm:/dev/kvm"
+      - "/dev/dri:/dev/dri"
+      - "/dev/dxg:/dev/dxg"
+    read_only: false
+    network_mode: host # ホストと共有しないと10.0.2.2がエミュレータが稼働してるコンテナになるため
+    ports:
+      - 5555:5555
+      - 5037:5037
+      - 5554:5554
+    env_file:
+      - .env
+    volumes:
+      - ./:/emulator
+      - /tmp/.X11-unix:/tmp/.X11-unix
+      - /mnt/wslg:/mnt/wslg
+      - /usr/lib/wsl:/usr/lib/wsl
